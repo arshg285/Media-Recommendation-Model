@@ -32,6 +32,8 @@ A more descriptive outline of our delegation of our responsibilities is as follo
 - Sorted results based on user input/selection for rank-by
 - Saved dataframe as a webpage 
 - Displayed the results with message including reminder of user's chosen keywords and html table 
+- Added docstrings to functions 
+- Prepared outlines for all project presentations
 
 ## What is "Lights, Camera, Python!"?
 
