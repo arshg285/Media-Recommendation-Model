@@ -158,7 +158,7 @@ import scrapy
 import pandas as pd
 import csv
 
-file = open("/Users/arshmacbook/Desktop/PIC 16B/Course Project/Project/keywords.csv", 'r')
+file = open("keywords.csv", 'r')
 words = list(csv.reader(file))
 keywords = []
 for i in range(len(words)):
@@ -241,7 +241,7 @@ We import the scrapy and csv libraries since `scrapy` will be used to run and cr
 ### Reading user input
 
 ```python
-file = open("/Users/arshmacbook/Desktop/PIC 16B/Course Project/Project/keywords.csv", 'r')
+file = open("keywords.csv", 'r')
 words = list(csv.reader(file))
 keywords = []
 for i in range(len(words)):
@@ -359,12 +359,14 @@ ________________________________________________________________________________
 
 Next, we create a dataframe using the csv file created by our scraper. The links for the posters are added as a column to this dataframe. 
 ______________________________________________________________________________________________
+
 If the user indicated "Most Popular", as their ranking choice: then we do nothing; the scraping naturally takes place in that order. 
 
 If the user indicated "Highest rating" as their ranking choice: we short the dataframe values by the *Rating* column. 
 
 If the user indicated "Year of Release" as their ranking choice: we short the dataframe values by the *Year* column. 
 ______________________________________________________________________________________________
+
 For the following section we will need: 
 
 ### from IPython.core.display import HTML
@@ -380,7 +382,7 @@ We finally save the dataframe as a webpage.
 
 ```python
 # Create a dataframe using csv file
-df = pd.read_csv('/Users/hiral/Desktop/Project/movies.csv')
+df = pd.read_csv('movies.csv')
 
 # Assign posters list as new column of the dataframe
 df.insert(0, 'Poster', movie_posters[:df.shape[0]])
@@ -430,5 +432,5 @@ put_markdown(":D")
 Last but not least, we delete the movies.csv file. 
 
 ```python
-os.remove('/Users/hiral/Desktop/Project/movies.csv')
+os.remove('movies.csv')
 ```
