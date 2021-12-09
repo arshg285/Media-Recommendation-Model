@@ -78,7 +78,9 @@ Results have the potential of including inaccurate, stereotypical depiction of t
 ## Tentative Timeline
 
 **Two Weeks (Week 5):** Set up databases and tables for different movies and characteristics
+
 **Four Weeks (Week 7):** Establish a pipeline to fetch results based on selected criteria
+
 **Six Weeks (Week 9):** Model can make accurate recommendations to user based on selected parameters
 
 *Thank you!*
