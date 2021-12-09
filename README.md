@@ -37,6 +37,15 @@ A more descriptive outline of our delegation of our responsibilities is as follo
 
 This project is an interactive WebApp, where users can explore intersectionality in film and televison. This is done by allowing users to select two keywords that will result in a table displaying shows and movies at the intersection of those identities. 
 
+# Instructions on how to use our code and run the webapp on your own device!
+
+1. Download all the files in this repository, named **Web App.ipynb**, **project-spider.py**, **function_definitions.py**, and **Cat-Movie.png** in the directory of your choice that you can access easily.
+2. Open the terminal, set the directory to where all your downloaded files are using the command `cd /Users/...` and enter the command `scrapy startproject IMDB_scraper`.
+3. Then, place the **project-spider.py** file in the folder titled **spiders** within the scrapy project that would be created in your directory.
+4. Now, open the Jupyter Notebook titled **Web App.ipynb** in the web browser of your choice using Anaconda Navigator or simply runnning the command `jupyter notebook` in the terminal.
+5. Go to the **kernel** tab on the top bar of the Jupyter Notebook and select the option **Restart Kernel and Run All**.
+6. Enjoy your selections!
+
 ## Webapp: PywebIO
 
 To make the webapp, we used the Python library "PywebIO" which supports synchornization, callback, and couroutine to obtain and process user inputs. 
