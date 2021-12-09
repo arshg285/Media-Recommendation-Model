@@ -24,10 +24,14 @@ A more descriptive outline of our delegation of our responsibilities is as follo
 ### Hiral Kotecha
 
 - Created a web app using PyWebIO that outputs prompts to a web browser, and takes in input from the user. This includes a scrolldown list of keywords, and radio buttons for what the user would like to rank result by. 
+- Researched intersectionality and applicable keywords
 - Saved approrpiate user input to csv file to be used by Arsh's web scraper. 
 - Used BeautifulSoup for image scraping: including obtaining links of all results pages matching user input, then using those links to obtain all movie poster links.
 - Converted CSV file created by Arsh's scraper into a dataframe, appended image links as column 
 - Converted image links to HTML tags and rendered images using HTMl method
+- Sorted results based on user input/selection for rank-by
+- Saved dataframe as a webpage 
+- Displayed the results with message including reminder of user's chosen keywords and html table 
 
 ## What is "Lights, Camera, Python!"?
 
