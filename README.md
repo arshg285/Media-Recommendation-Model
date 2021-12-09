@@ -274,7 +274,7 @@ class MoviesSpider(scrapy.Spider):
 
 We now start with the class `MoviesSpider` which will run all the methods we need to perform the required tasks. The `name` field specifies how this spider will be called in the terminal for when we want to run it. Additionally, depending on the number of keywords supplied by the user, the `start_url` is amended accordingly which will be the starting point for our webscraper to start its scraping.
 _____________________________________________________________________________________________
-
+## Image Scraping
 Our project scrapes moves and shows from IMDB. However, an IMDB page that we want to scrape from can have results on multiple "next" pages. To get the links of all the pages, we used the following imports:
 
 #### import requests 
