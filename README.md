@@ -289,14 +289,14 @@ We then begin with defining the `parse` function.
 ```python
 for movie in response.css("div.lister-item.mode-detail"):
 
-            name = movie.css("div.lister-item-content").css("a::text").get()
-            if name in names:
-                break
-            else:
-                names.append(name)
-            rating = movie.css("div.lister-item-content").css("strong::text").get()
-            certificate = movie.css("div.lister-item-content").css("span.certificate::text").get()
-            year = movie.css("div.lister-item-content").css("span.lister-item-year.text-muted.unbold::text").get()
+    name = movie.css("div.lister-item-content").css("a::text").get()
+    if name in names:
+        break
+    else:
+        names.append(name)
+    rating = movie.css("div.lister-item-content").css("strong::text").get()
+    certificate = movie.css("div.lister-item-content").css("span.certificate::text").get()
+    year = movie.css("div.lister-item-content").css("span.lister-item-year.text-muted.unbold::text").get()
 ```
 In the above code block, the webpage is returned in the form of a `response` after runnning `scrapy shell` on it and we can access the various CSS elements of this webpage using `response.css`.
 
