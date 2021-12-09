@@ -9,10 +9,10 @@ from pywebio import start_server
 from pywebio.output import put_text
 from pywebio.output import *
 from pywebio.session import *
-import time
-import pandas as pd
 from pywebio.output import put_html, put_loading
 from pywebio import start_server
+import time
+import pandas as pd
 import csv 
 import re
 from fpdf import FPDF
@@ -25,11 +25,43 @@ import os
 import warnings
 warnings.simplefilter("ignore")
 
-# We create a class WebApp since a lot of the functions use same variables so this way we can house all function definitions under a singular class for which we could just call an instance when running the code
-class WebApp:
 
-	# This will set up the basic environment for the webapp and allow user to select keywords of interest
+class WebApp:
+	"""
+	A class for all WebApp functions, which share common variables. 
+	
+	
+	Methods
+	-------
+	run_app()
+		Sets up environment for app, obtaining keywords from user and saving to CSV file.
+	   
+	get_pages()
+		Gets all webpages for movies and TV shows of interest
+	
+	get_posters()
+		Gets URLs for movie posters of all titles that will be displayed to the user 
+		
+	create_images()
+		Creates table with text and rendered images on films and TV shows to be shown to user. 
+	
+	display_results()
+		Displays movie and TV show recommendations to user. 
+	
+	delete_csv()
+		Deletes movies csv file. 
+		
+	"""
+	
+
+
 	def run_app(self):
+		""" Sets up basic environment for the webapp and allows user to select keywords of interest, saving keywords into CSV file.
+		
+		Returns: 
+			None 
+		
+		"""
 
 		# Configuring environment: title of page 
 		set_env(title = "Intersectionality in Film and Television")
@@ -80,10 +112,14 @@ class WebApp:
 
 		put_markdown(":D")
 
-
-	# This function will get us all the webpages for the movies and TV shows of our interest
+		
 	def get_pages(self):
-
+		""" Get all webpages for movies and TV shows of interest
+		
+		Returns: 
+			None 
+		
+		""""
 		with requests.Session() as session:
 		    
 		    # For saving links 
@@ -117,8 +153,14 @@ class WebApp:
 		    	page_number += 1
 
 
-	# This function will get us the URLs for the posters of all the titles that will be displayed to the user
+			
 	def get_posters(self):
+		""" Get URLs for movie posters of all titles that will be displayed to the user 
+		
+		Returns:
+			None 
+		
+		"""
 
 		# For storing movie posters 
 		self.movie_posters = []
@@ -136,9 +178,16 @@ class WebApp:
 		            if img.has_attr('loadlate'):
 		                self.movie_posters.append(img['loadlate'])
 
-
-	# This will convert the URLs fetched by the previous functions into actual images to be displayed in the table of recommendations to the user
+				
 	def create_images(self):
+		""" 
+		Create table with text information on films and shows and combine with movie poster URLS previously fetched.. 
+		Convert image URLS into actual images. 
+		
+		Returns: 
+			None 
+		
+		"""
 
 		# Create a dataframe using csv file
 		df = pd.read_csv('movies.csv')
@@ -170,8 +219,13 @@ class WebApp:
 		df.to_html('resultspage.html',escape=False, formatters=dict(Poster=path_to_image_html))
 
 
-	# This function will display all the results, that is, movies and TV show recommendations to the user
 	def display_results(self):
+		""" Display movie and TV show recommendations to user. 
+		
+		Returns: 
+			None 
+		
+		"""
 
 		# Message stating that results shown are for the specified keywords 
 		put_text('"ah oui, here are you choices! enjoy!"').style('color: black; font-family: "Free Mono"') 
@@ -189,6 +243,12 @@ class WebApp:
 		put_markdown(":D")
 
 
-	# This function will delete the movies.csv file created during the process of webscraping in order for the process to be repeated
+
 	def delete_csv(self):
+		""" Delete movies csv file. 
+		
+		Returns: 
+			None
+		
+		"""
 		os.remove('movies.csv')
