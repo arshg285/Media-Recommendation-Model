@@ -28,9 +28,6 @@ A more descriptive outline of our delegation of our responsibilities is as follo
 - Used BeautifulSoup for image scraping: including obtaining links of all results pages matching user input, then using those links to obtain all movie poster links.
 - Converted CSV file created by Arsh's scraper into a dataframe, appended image links as column 
 - Converted image links to HTML tags and rendered images using HTMl method
-- 
-
-
 
 ## What is "Lights, Camera, Python!"?
 
@@ -41,7 +38,6 @@ This project is an interactive WebApp, where users can explore intersectionality
 To make the webapp, we used the Python library "PywebIO" which supports synchornization, callback, and couroutine to obtain and process user inputs. 
 
 From PywebIO, we imported:
-
 _____________________________________________________________________________________________    
 
 ### pywebio.input : get input from web broswer
@@ -56,10 +52,8 @@ ________________________________________________________________________________
 • input_update ➪ update input item
 
 #### Read more on input functions: https://pywebio.readthedocs.io/en/latest/input.html
-    
 _____________________________________________________________________________________________    
-    
-                                                   
+                                              
 ### pywebio.output : make output to web browser
 #### Examples:
 
@@ -72,8 +66,6 @@ ________________________________________________________________________________
 • toast ➪ show a notification message
 
 #### Read more on output functions: https://pywebio.readthedocs.io/en/latest/output.html
-
-
 _____________________________________________________________________________________________    
 
 ### pywebio.session : more control to session
@@ -86,16 +78,10 @@ ________________________________________________________________________________
 • set_env ➪ configure the environment of the current session 
 
 #### Read more on session functions: https://pywebio.readthedocs.io/en/latest/session.html
-    
-    
-
-
-
 _____________________________________________________________________________________________ 
 
 First, using pywebio.session, we set the title of the page. 
 Then, using pywebio.output, we created a popup that welcomes the user. We indicated that a user click on a button will close the popup. 
-
 
 ```python
 # Configuring environment: title of page 
@@ -106,11 +92,9 @@ popup('Welcome to ~Lights, Camera, Python~ :)', [
     put_button('Find something to watch!', onclick = close_popup)
 ])
 ```
-
 _____________________________________________________________________________________________ 
 
 Then, we created a list of keywords. Using pywebio.input (input_group), we asked for the user to select from these keywords, and to select how they would like to rank the results (using radio buttons). These selections are saved in "interests_selection"
-
 
 ```python
 # Keywords that user can select from 
@@ -130,12 +114,9 @@ interests_selection = input_group('What are your interests?', [
                             ])
 
 ```
-
 _____________________________________________________________________________________________ 
 
 Next, we used list comprehension to get only (valid) user inputted keywords from "interests_selection" and stored them in *keywords*. Then we turned *keywords* into a dataframe that could be converted to a csv file called "keywords.csv"
-
-
 
 ```python
 # Save keywords into csv file disregarding "select" as a keyword and "rank-by" choice
@@ -144,11 +125,9 @@ keywords = ([key for key in keywords if key != "Select"])
 df = pd.DataFrame(keywords, columns = ["column"])
 df.to_csv("keywords.csv", index=False)
 ```
-
 _____________________________________________________________________________________________
+
 Using pywebio.output, we displayed a "process bar", and an image of a cat watching movies. We displayed text to go along with the image. Then, we created a function called *show_msg* that displays some additional text. We have a popup message appear, and when the user clicks on it, *show_msg* is called. 
-
-
 
 ```python
 # Loading bar 
@@ -168,27 +147,133 @@ def show_msg():
 # Monsieur Mittens message pop-up 
 toast("Message from Monsieur Mittens", position = "right", duration=0, onclick=show_msg)
 ```
-
 _____________________________________________________________________________________________
-ARSH INSERT HERE 
 
+## Web Scraper
 
-HEREEEEEE
+The code for the entire webscraper is as follows:
 
+```python
+import scrapy
+import pandas as pd
+import csv
 
+file = open("/Users/arshmacbook/Desktop/PIC 16B/Course Project/Project/keywords.csv", 'r')
+words = list(csv.reader(file))
+keywords = []
+for i in range(len(words)):
+    keywords.append(words[i][0])
+    
+max_titles = 50
+keywords = keywords[1:]
 
+class MoviesSpider(scrapy.Spider):
 
+    name = "movies"
 
+    if len(keywords) == 1:
+        start_url = f"https://www.imdb.com/search/keyword/?keywords={keywords[0]}"
 
+    if len(keywords) == 2:
+        start_url = f"https://www.imdb.com/search/keyword/?keywords={keywords[0]}%2C{keywords[1]}&sort=moviemeter,asc&mode=detail&page=1&ref_=kw_ref_key"
 
+    start_urls = [start_url]
 
+    names = []
+    num = 0
 
+    def parse(self, response):
 
+        names = []
 
-HERE 
+        for movie in response.css("div.lister-item.mode-detail"):
 
+            name = movie.css("div.lister-item-content").css("a::text").get()
+            if name in names:
+                break
+            else:
+                names.append(name)
+            rating = movie.css("div.lister-item-content").css("strong::text").get()
+            certificate = movie.css("div.lister-item-content").css("span.certificate::text").get()
+            year = movie.css("div.lister-item-content").css("span.lister-item-year.text-muted.unbold::text").get()
 
+            if len(year) == 6:
+                year = year[1:-1]
+            else:
+                if year[1] == "I":
+                    year = year[-5:-1]
+                else:
+                    year = year[1:-1]
+            year = year[:4]
 
+            if self.num < max_titles:
+
+                yield {
+                    "Name" : name,
+                    "Rating" : rating,
+                    "Year" : year,
+                    "Certification" : certificate
+                }
+
+                self.num += 1
+
+            if len(response.css("a.lister-page-next.next-page")) != 0:
+
+                next_page = response.css("a.lister-page-next.next-page").attrib["href"]
+
+                if next_page:
+                    next_page = response.urljoin(next_page)
+
+                    yield scrapy.Request(next_page, callback = self.parse)
+```
+
+We will now analyze each segment of it.
+
+### Importing libraries
+
+```python
+import scrapy
+import csv
+```
+
+We import the scrapy and csv libraries since `scrapy` will be used to run and create the webscraper and `csv` will be used to read the keywords input supplied by the user in the form of a csv file.
+
+### Reading user input
+
+```python
+file = open("/Users/arshmacbook/Desktop/PIC 16B/Course Project/Project/keywords.csv", 'r')
+words = list(csv.reader(file))
+keywords = []
+for i in range(len(words)):
+    keywords.append(words[i][0])
+    
+max_titles = 50
+keywords = keywords[1:]
+```
+
+The above code is the part where the webscraper interprets the user inputted keywords through the csv file supplied containing that information. `max_titles` is the total number of titles that will be displayed by the main recommender system on the webapp.
+
+### Starting with class implementation
+
+```python
+class MoviesSpider(scrapy.Spider):
+
+    name = "movies"
+
+    if len(keywords) == 1:
+        start_url = f"https://www.imdb.com/search/keyword/?keywords={keywords[0]}"
+
+    if len(keywords) == 2:
+        start_url = f"https://www.imdb.com/search/keyword/?keywords={keywords[0]}%2C{keywords[1]}&sort=moviemeter,asc&mode=detail&page=1&ref_=kw_ref_key"
+
+    start_urls = [start_url]
+
+    names = []
+    num = 0
+```
+
+We now start with the class `MoviesSpider` which will run all the methods we need to perform the required tasks. The `name` field specifies how this spider will be called in the terminal for when we want to run it. Additionally, depending on the number of keywords supplied by the user, the `start_url` is amended accordingly which will be the starting point for our webscraper to start its scraping.
+_____________________________________________________________________________________________
 
 Our project scrapes moves and shows from IMDB. However, an IMDB page that we want to scrape from can have results on multiple "next" pages. To get the links of all the pages, we used the following imports:
 
@@ -207,7 +292,6 @@ A starter url is made based on the user inputted keywords.
 This link is saved to a list called *all_links*.
 
 BeautifulSoup checks if the indicator for a *next* page is found on this link (*soup.find*), and if there is, it goes onto the next page and saves that link. This process is done until there are no more indicators that there is a *next* page. 
-
 
 ```python
 with requests.Session() as session:
@@ -242,7 +326,6 @@ with requests.Session() as session:
         url = urljoin(url, next_link["href"])
         page_number += 1
 ```
-
 _____________________________________________________________________________________________
 
 Next, we use the saved links to scrape the movie posters. 
@@ -254,8 +337,6 @@ ________________________________________________________________________________
 _____________________________________________________________________________________________
 
 BeautifulSoup looks for all objects in our saved links that match the tag *img*. If it has the attribute *loadlate* (which is for movie posters on imdb), then we save the image link in a list. 
-
-
 
 ```python
 # For storing movie posters 
@@ -274,8 +355,8 @@ for link in all_links:
             if img.has_attr('loadlate'):
                 movie_posters.append(img['loadlate'])
 ```
-
 ______________________________________________________________________________________________
+
 Next, we create a dataframe using the csv file created by our scraper. The links for the posters are added as a column to this dataframe. 
 ______________________________________________________________________________________________
 If the user indicated "Most Popular", as their ranking choice: then we do nothing; the scraping naturally takes place in that order. 
@@ -296,8 +377,6 @@ Then, using df.to_html we render the dataframe as an HTMl table.
 *formatters = dict(Poster = path_to_image_html))* is what will allow us to convert the Poster column of image links into actual images. 
 
 We finally save the dataframe as a webpage.
-
-
 
 ```python
 # Create a dataframe using csv file
@@ -327,11 +406,9 @@ HTML(df.to_html(escape=False,formatters=dict(Poster=path_to_image_html)))
 # Saving the dataframe as a webpage
 df.to_html('resultspage.html',escape=False, formatters=dict(Poster=path_to_image_html))
 ```
-
 ______________________________________________________________________________________________
 
 In this final section, we display the table using pywebio.output (put_html)!
-
 
 ```python
 # Message stating that results shown are for the specified keywords 
@@ -352,8 +429,6 @@ put_markdown(":D")
 
 Last but not least, we delete the movies.csv file. 
 
-
 ```python
 os.remove('/Users/hiral/Desktop/Project/movies.csv')
 ```
-
