@@ -79,6 +79,7 @@ ________________________________________________________________________________
 
 #### Read more on session functions: https://pywebio.readthedocs.io/en/latest/session.html
 _____________________________________________________________________________________________ 
+## Page Welcome
 
 First, using pywebio.session, we set the title of the page. 
 Then, using pywebio.output, we created a popup that welcomes the user. We indicated that a user click on a button will close the popup. 
@@ -93,6 +94,7 @@ popup('Welcome to ~Lights, Camera, Python~ :)', [
 ])
 ```
 _____________________________________________________________________________________________ 
+## User Input
 
 Then, we created a list of keywords. Using pywebio.input (input_group), we asked for the user to select from these keywords, and to select how they would like to rank the results (using radio buttons). These selections are saved in "interests_selection"
 
@@ -115,6 +117,7 @@ interests_selection = input_group('What are your interests?', [
 
 ```
 _____________________________________________________________________________________________ 
+## Save Keywords 
 
 Next, we used list comprehension to get only (valid) user inputted keywords from "interests_selection" and stored them in *keywords*. Then we turned *keywords* into a dataframe that could be converted to a csv file called "keywords.csv"
 
@@ -126,6 +129,7 @@ df = pd.DataFrame(keywords, columns = ["column"])
 df.to_csv("keywords.csv", index=False)
 ```
 _____________________________________________________________________________________________
+## Loading Screen
 
 Using pywebio.output, we displayed a "process bar", and an image of a cat watching movies. We displayed text to go along with the image. Then, we created a function called *show_msg* that displays some additional text. We have a popup message appear, and when the user clicks on it, *show_msg* is called. 
 
@@ -356,7 +360,7 @@ for link in all_links:
                 movie_posters.append(img['loadlate'])
 ```
 ______________________________________________________________________________________________
-
+## Create results table and render images 
 Next, we create a dataframe using the csv file created by our scraper. The links for the posters are added as a column to this dataframe. 
 ______________________________________________________________________________________________
 
@@ -409,6 +413,7 @@ HTML(df.to_html(escape=False,formatters=dict(Poster=path_to_image_html)))
 df.to_html('resultspage.html',escape=False, formatters=dict(Poster=path_to_image_html))
 ```
 ______________________________________________________________________________________________
+## Display results
 
 In this final section, we display the table using pywebio.output (put_html)!
 
