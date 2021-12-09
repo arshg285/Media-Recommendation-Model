@@ -12,14 +12,11 @@ A more descriptive outline of our delegation of our responsibilities is as follo
 
 ### Arsh Gupta
 
-- Arsh created the webscraper that incorporates input from the user in order to crawl on multiple webpages across the internet to fetch results of movies and TV shows that are most relevant to the parameters of interest identified by the user.
-- Part of this exercise using the library Scrapy to create the class that would perform the different parsing methods and preparing the Python script so that it was able to generate the appropriate `start_urls` based on whatever input was provided by the user without any need for hardcoding.
-- The spider would then start of the appropriate webpage and locate various elements for each title displayed including the movie/TV show name, certification, and year of release based on the CSS attributes for the different parts of the webpage.
-- These are then yielded by the class method in the form of a dictionary forming a singular row of the table containing all results that would be displayed to the user.
+- Arsh created the webscraper that incorporates input from the user in order to crawl on multiple webpages across the internet to fetch results of movies and TV shows that are most relevant to the parameters of interest identified by the user uusing the library Scrapy to create the class that would perform the different parsing methods.
+- The spider would start at the appropriate webpage and locate various elements for each title including the movie/TV show name, certification, and year of release based on the CSS attributes for the different parts of the webpage which were then yielded by the class method in the form of a dictionary forming a singular row of the table containing all results that would be displayed to the user.
 - Some pieces of information such as year of release were fetched in a way that required additional data manipulation in order for it to be presented in a comprehensible format which was also accomplished in the scraper.
 - Finally, the spider checks if there are multiple webpages containing more results for titles with the provided keywords and if so then it yields the `scrapy.Request` method with the callback to the same `self.parse` class method.
-- Addiitonally, Arsh consolidated the code from the webapp into a single `function_definitions.py` file which could then be imported into the Jupyter Notebook being used to deploy the webapp.
-- This included creating a class and re-adjusting the the function definitions in a way that they could be called without errors and class variables were appropriately defined.
+- Addiitonally, Arsh consolidated the code and functions from the webapp in a class titled `WebApp` in the `function_definitions.py` file which could then be imported into the Jupyter Notebook being used to deploy the webapp.
 
 ### Hiral Kotecha
 
