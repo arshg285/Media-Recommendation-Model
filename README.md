@@ -32,8 +32,6 @@ A more descriptive outline of our delegation of our responsibilities is as follo
 - Sorted results based on user input/selection for rank-by
 - Saved dataframe as a webpage 
 - Displayed the results with message including reminder of user's chosen keywords and html table 
-- Added docstrings to functions 
-- Prepared outlines for all project presentations
 
 ## What is "Lights, Camera, Python!"?
 
@@ -282,7 +280,70 @@ class MoviesSpider(scrapy.Spider):
     num = 0
 ```
 
-We now start with the class `MoviesSpider` which will run all the methods we need to perform the required tasks. The `name` field specifies how this spider will be called in the terminal for when we want to run it. Additionally, depending on the number of keywords supplied by the user, the `start_url` is amended accordingly which will be the starting point for our webscraper to start its scraping.
+We now start with the class `MoviesSpider` which will run all the methods we need to perform the required tasks. The `name` field specifies how this spider will be called in the terminal for when we want to run it. Additionally, depending on the number of keywords supplied by the user, the `start_url` is amended accordingly which will be the starting point for our webscraper to start its scraping. The list `names` will be used to collect the all the titles that our scraper collects.
+
+### `parse` function
+
+We then begin with defining the `parse` function.
+
+```python
+for movie in response.css("div.lister-item.mode-detail"):
+
+            name = movie.css("div.lister-item-content").css("a::text").get()
+            if name in names:
+                break
+            else:
+                names.append(name)
+            rating = movie.css("div.lister-item-content").css("strong::text").get()
+            certificate = movie.css("div.lister-item-content").css("span.certificate::text").get()
+            year = movie.css("div.lister-item-content").css("span.lister-item-year.text-muted.unbold::text").get()
+```
+In the above code block, the webpage is returned in the form of a `response` after runnning `scrapy shell` on it and we can access the various CSS elements of this webpage using `response.css`.
+
+We can access the name of the movie/TV show using `div.lister-item-content` and then followed by `.css("a::text").get()` to get the text associated.
+
+A similar format is followed to get `rating`, `certificate`, and `year`.
+
+```python
+if len(year) == 6:
+      year = year[1:-1]
+  else:
+      if year[1] == "I":
+          year = year[-5:-1]
+      else:
+          year = year[1:-1]
+  year = year[:4]
+```
+
+The above part is primarily used to reformat the string we get for `year` into a more understandable and comprehensible format by removing unneccessary characters.
+
+```python
+if self.num < max_titles:
+
+  yield {
+      "Name" : name,
+      "Rating" : rating,
+      "Year" : year,
+      "Certification" : certificate
+            }
+
+self.num += 1
+```
+
+The above part of our code makes the scraper yield a dictionary containing all the information about the TV show/movie. The `if` condition `self.num < max.titles` ensures that only the top 20 results are displayed.
+
+```python
+if len(response.css("a.lister-page-next.next-page")) != 0:
+
+  next_page = response.css("a.lister-page-next.next-page").attrib["href"]
+
+    if next_page:
+        next_page = response.urljoin(next_page)
+
+        yield scrapy.Request(next_page, callback = self.parse)
+```
+
+This part checks if there are multiple webpages containing titles that are relevant to the keywords selected by the user, which is checked by the `if len(response.css("a.lister-page-next.next-page")) != 0:` condition and if so, then the scraper yields `scrapy.Request` and calls back the `self.parse` function over again to run on the next webpage.
 _____________________________________________________________________________________________
 ## Image Scraping
 Our project scrapes moves and shows from IMDB. However, an IMDB page that we want to scrape from can have results on multiple "next" pages. To get the links of all the pages, we used the following imports:
